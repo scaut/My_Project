@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Log In</title>
+    <!-- Framework CSS -->
+    <link rel="stylesheet" href="css/frame/screen.css" type="text/css" media="screen, projection" />
+    <link rel="stylesheet" href="css/frame/print.css" type="text/css" media="print" />
+    <!-- Site Specific CSS -->
+    <link rel="stylesheet" href="css/theme.css" type="text/css" media="screen, projection" />
+    <!--[if IE]><link rel="stylesheet" href="css/frame/ie.css" type="text/css" media="screen, projection"><![endif]-->
+    <link rel="stylesheet" type="text/css" href="markitup/skins/simple/style.css" />
+    <link rel="stylesheet" type="text/css" href="markitup/sets/default/style.css" />
+    <link rel="stylesheet" type="text/css" href="facebox/facebox.css" />
+
+    <script language="javascript" type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+    
+    <script language="javascript" type="text/javascript">
+		function fncSubmit() {
+			document.forms["loginForm"].submit();
+		}
+	</script>
+    <!--[if lt IE 9]>
+    <script src="http://ie7-js.googlecode.com/svn/version/2.1(beta3)/IE9.js"></script>
+    <![endif]-->
+</head>
+<body class="login">
+<div class="container_12">
+	<div class="grid_6 prefix_3 suffix_3">
+    	<div class="main login" style="width:auto; padding:20px;">
+        	<div class="content-box">
+        		<form name="loginForm" action="chat.html" method="get">
+	            	<div class="content-header">
+	                	<h3>개발팀 채팅방</h3>
+	                </div>
+	               	<div>
+		                <label>Nickname</label>
+		                <input type="text" name="nickname" style="width:300px;" />
+	                </div>
+        		</form>
+                <p class="link-yellow">
+               	<a href="#" onclick="fncSubmit(); return false;"><span><span>채팅방 들어가기</span></span></a>
+                </p>
+                <div class="clear"></div>
+            </div>
+    	</div>
+    </div>
+</div>
+</body>
+</html>

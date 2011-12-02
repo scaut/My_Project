@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>개발팀 채팅방</title>
+    
+    <!-- Framework CSS -->
+    <link rel="stylesheet" href="css/frame/screen.css" type="text/css" media="screen, projection" />
+    <link rel="stylesheet" href="css/frame/print.css" type="text/css" media="print" />
+    
+		<!-- Site Specific CSS -->
+		<link rel="stylesheet" href="css/theme.css" type="text/css" media="screen, projection" />
+		<link rel="stylesheet" type="text/css" href="markitup/skins/simple/style.css" />
+		<link rel="stylesheet" type="text/css" href="markitup/sets/default/style.css" />
+		<link rel="stylesheet" type="text/css" href="facebox/facebox.css" />
+		<!--[if IE]><link rel="stylesheet" href="css/frame/ie.css" type="text/css" media="screen, projection"><![endif]-->
+		
+		<!-- default js -->
+		<script language="javascript" type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+		
+		<!-- nodejs js -->
+		<script language="javascript" type="text/javascript" src="/nowjs/now.js"></script>    
+		
+		<script language="javascript" type="text/javascript">
+	    
+		  var isActive = false;
+		  var idleTimer;
+
+		  function getParam(name) {
+	        name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+	        var regexS = "[\\?&]"+name+"=([^&#]*)";
+	        var regex = new RegExp( regexS );
+	        var results = regex.exec( window.location.href );
+	        if( results == null ) {
+	          return "";
+	        } else {
+	          return results[1];
+	        }
+	      }
+	      
+	      var nickname = decodeURIComponent(getParam("nickname"));
+	      if ( nickname == "" ) {
+	        nickname = "빵구똥꾸";
+	      }
+	      
+	      $(document).ready(function() {
+		    
+	        $("#text-input").keyup(function(event){
+	            if ( event.keyCode == 13 ) {
+	              sendMessage();
+	            } else {
+				  distributeActive();
+				}
+	        });
+	      });
+	      
+	      $(document).ready(function(){
+	        
+	        now.receiveTotalConnectCount = function(message){
+	          $("#totalConnectCount").html(message);
+	        }
+			
+	        now.receiveMemberList = function(message){
+			  $('#memberList').html("");
+	          $.each(message, function(key, value){   
+				$('#memberList').
+						  append('<li id="listClientId_li_'+key+'">').
+						  append('<a id="listClientId_write_'+key+'" href="#" class="edit" style="display:none;" ><img src="images/icons/edit-trans.png"/></a>').
+						  append('<a href="#" id="listClientId_a_'+key+'">'+value+'</a>').
+						  append('</li>');
+			    if(now.core.clientId == key){
+					$('#listClientId_a_'+key).css("color", "#000000");
+					$('#listClientId_a_'+key).css("font-weight", "bold");
+			    }
+	          });
+	        }
+
+			now.receiveMemberActive = function(message){
+				$('#listClientId_write_'+message).css("display", "");
+			}
+
+			now.receiveMemberIdle = function(message){
+				$('#listClientId_write_'+message).css("display", "none");
+			}
+
+	        now.receiveMessage = function(name, clientId, message){
+	            chatText = "<br>" + name + " : " + message;
+	          if ( now.core.clientId == clientId ) {
+	            chatText = "<strong>" + chatText + "</strong>";
+	          }
+	          $("#messages").append(chatText);
+	          document.getElementById("chatArea1").scrollTop = document.getElementById("chatArea2").scrollHeight;
+	        }
+	      
+	        $("#send-button").click(function(){
+	          sendMessage();
+	        });
+
+	        now.name = nickname;
+	      
+	        now.ready(function(){
+	          setServerRoomFromList(now.serverRoomsList);
+	          now.changeRoom($('#server-room').val());
+	          $("#send-button").removeAttr('disabled');
+	        });
+	        
+	        $('#server-room').change(function(){
+	          $("#messages").html('');
+	          now.changeRoom($('#server-room').val());
+	        });
+	      
+	      });
+
+		  function distributeActive(){
+		    if (!isActive){
+				isActive = true;
+				now.distributeActive();
+		    }
+			clearTimeout(idleTimer);
+			idleTimer = setTimeout("distributeIdle()", 2000);
+		  }
+
+		  function distributeIdle(){
+			isActive = false;
+			now.distributeIdle();
+		  }
+	      
+	      function sendMessage() {
+	        now.distributeMessage($("#text-input").val());
+	        $("#text-input").val("");
+			isActive = false;
+	      }
+	      
+	      function setServerRoomFromList(roomList){
+	        $('#server-room').empty();
+	        $.each(roomList, function(key, value)
+	        {   
+	             $('#server-room').
+	                  append($("<option></option>").
+	                  attr("value",key).
+	                  text(value)); 
+	        });
+	      }   
+   
+		</script>
+
+    <!--[if lt IE 9]>
+    <script src="http://ie7-js.googlecode.com/svn/version/2.1(beta3)/IE9.js"></script>
+    <![endif]-->
+    
+</head>
+<body>
+<div style="margin-top:50px;">
+</div>
+<div class="main">
+    <div class="container_12">
+    	<div class="grid_12" style="height:450px;">
+            <div class="grid_3 sidebar alpha">
+            		<div class="content-box" style="height:382px; overflow: auto;">
+                  	<div class="content-header">
+                      	<h3>채팅방 접속자</h3>
+                      </div><!--/content-header-->
+                      <ul id="memberList">
+                      </ul>
+                  </div><!--/content-box-->
+            </div><!--/sidebar-->
+            <div class="grid_9 content omega">
+            	<div class="content-box">
+                	<div class="content-header">
+                    	<h3>개발팀 채팅방 / 전체 접속자 : <span id="totalConnectCount"></span> 명</h3>
+                  </div>
+					        <div id="chatArea1" style="height:280px; overflow: auto;">
+					          <div id="chatArea2" >
+					            <span id="messages"></span><br/>
+					          </div>
+					        </div>                
+					                
+					        <input type="text" id="text-input" style="width:400px;" />
+							<a href="#" onclick="sendMessage(); return false;" style="font-weight:bold;">[전송]</a>
+					        <select id="server-room">
+					          <option value="connecting" selected>접속중...</option> 
+					        </select>         
+                </div><!--/content-box-->
+            </div><!--/content-->
+    	</div><!--/grid-12-->
+        <div class="clear"></div>
+    </div><!--/container-->
+</div><!--/main-->
+<div class="container_12 footer">
+    <div class="grid_10 alpha">
+    	<p>Firefox의 경우 한글 keyup버그로 한글입력시 입력중 정보 나오지 않습니다.</p>
+    </div>
+</div><!--/footer-->
+</body>
+</html>
