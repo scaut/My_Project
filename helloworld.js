@@ -5,4 +5,4 @@ http.createServer(function(request, response){
 	response.write("Hello NodeJS");
 	response.end();
 }).listen(8080);
-sys.puts("Server running at http://192.168.1.128:8080");
+sys.puts("Server running...");
